@@ -7,48 +7,56 @@ logger()
     echo "$(date +'%b %d %T')" ${1} | tee -a /log/transcode.log
 }
 
-inotifywait -m /watch -e moved_to --timefmt '%FT%TZ' --format '%T %f' | \
-    while read timestamp name; do
-        uid=$(pwgen -A1 6)
+transcode()
+{
+    timestamp=${1}
+    name=${2}
 
-        logger "${uid}: detected \"${name}\" at ${timestamp}"
+    uid=$(pwgen -A1 6)
 
-        if [[ -d "/watch/${name}" ]]; then
-            mv "/watch/${name}/"*.avi /watch
-            logger "${uid}: moved original names from subdir"
-            rm -rf "/watch/${name}"
-        elif [[ -f "/watch/${name}" ]]; then
-            if [[ ${name##*.} = 'avi' ]]; then
-                mv "/watch/${name}" /output
-                logger "${uid}: original file moved to target location"
+    logger "${uid}: detected \"${name}\" at ${timestamp}"
 
-                logger "${uid}: transcoding original file"
+    if [[ -d "/watch/${name}" ]]; then
+        mv "/watch/${name}/"*.avi /watch
+        logger "${uid}: moved original names from subdir"
+        rm -rf "/watch/${name}"
+    elif [[ -f "/watch/${name}" ]]; then
+        if [[ ${name##*.} = 'avi' ]]; then
+            mv "/watch/${name}" /output
+            logger "${uid}: original file moved to target location"
 
-                output=${name%.avi}.m4v
+            logger "${uid}: transcoding original file"
 
-                if [[ -f "/temp/${output}" ]]; then
-                    rm -f "/temp/${output}"
-                    logger "${uid}: delete stalled file from previous transcoding"
-                fi
+            output=${name%.avi}.m4v
 
-                HandBrakeCLI \
-                    --input "/output/${name}" --output "/temp/${output}" \
-                    --preset "Apple 1080p30 Surround" --crop 0:0:0:0 --optimize
+            if [[ -f "/temp/${output}" ]]; then
+                rm -f "/temp/${output}"
+                logger "${uid}: delete stalled file from previous transcoding"
+            fi
 
-                if [[ $? -eq 0 ]]; then
-                    mv -f "/temp/${output}" /output
+            HandBrakeCLI \
+                --input "/output/${name}" --output "/temp/${output}" \
+                --preset "Apple 1080p30 Surround" --crop 0:0:0:0 --optimize
 
-                    name_size=$(stat -c%s "/output/${name}")
-                    output_size=$(stat -c%s "/output/${output}")
+            if [[ $? -eq 0 ]]; then
+                mv -f "/temp/${output}" /output
 
-                    logger "${uid}: transcoded, saved $((name_size-output_size)) bytes"
+                name_size=$(stat -c%s "/output/${name}")
+                output_size=$(stat -c%s "/output/${output}")
 
-                    rm -f "/output/${name}"
-                    logger "${uid}: original file removed"
-                else
-                    rm -f "/temp/${output}"
-                    logger "${uid}: error transcoding, tempfile deleted"
-                fi
+                logger "${uid}: transcoded, saved $((name_size-output_size)) bytes"
+
+                rm -f "/output/${name}"
+                logger "${uid}: original file removed"
+            else
+                rm -f "/temp/${output}"
+                logger "${uid}: error transcoding, tempfile deleted"
             fi
         fi
+    fi
+}
+
+inotifywait -m /watch -e moved_to --timefmt '%FT%TZ' --format '%T %f' | \
+    while read timestamp name; do
+        transcode ${timestamp} ${name}
     done
