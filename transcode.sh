@@ -44,7 +44,7 @@ transcode()
                 name_size=$(stat -c%s "/output/${name}")
                 output_size=$(stat -c%s "/output/${output}")
 
-                logger "${uid}: transcoded, saved $((name_size-output_size)) bytes"
+                logger "${uid}: transcoded and changed by $((output_size-name_size)) bytes"
 
                 rm -f "/output/${name}"
                 logger "${uid}: original file removed"
