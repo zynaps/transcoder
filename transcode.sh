@@ -17,9 +17,8 @@ transcode()
     logger "${uid}: detected \"${name}\" at ${timestamp}"
 
     if [[ -d "/watch/${name}" ]]; then
-        mv "/watch/${name}/"*.avi /watch
-        logger "${uid}: moved original names from subdir"
-        rm -rf "/watch/${name}"
+        mv "/watch/${name}" /deferred
+        logger "${uid}: defer multi-file torrent for human check"
     elif [[ -f "/watch/${name}" ]]; then
         if [[ ${name##*.} = 'avi' ]]; then
             mv "/watch/${name}" /output
