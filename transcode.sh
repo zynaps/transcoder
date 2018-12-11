@@ -56,6 +56,16 @@ transcode()
     fi
 }
 
+while true; do
+    name="$(ls -tr /watch | head -1)"
+
+    if [[ ${name} ]]; then
+        transcode "$(date +'%FT%TZ')" ${name}
+    else
+        break
+    fi
+done
+
 inotifywait -m /watch -e moved_to --timefmt '%FT%TZ' --format '%T %f' | \
     while read timestamp name; do
         transcode ${timestamp} ${name}
