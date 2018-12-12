@@ -2,11 +2,12 @@ FROM ubuntu:latest
 LABEL maintainer="Igor Vinokurov <zynaps@zynaps.ru>"
 
 RUN \
-  apt-get update && \
-  apt-get install --no-install-recommends -y software-properties-common && \
+  set -x && \
+  apt-get update -q && apt-get upgrade -y -q && \
+  apt-get install --no-install-recommends -y -q software-properties-common && \
   add-apt-repository ppa:stebbins/handbrake-releases && \
-  apt-get update && \
-  apt-get install --no-install-recommends -y handbrake-cli
+  apt-get update -q && \
+  apt-get install --no-install-recommends -y -q handbrake-cli
 
 WORKDIR /
 
