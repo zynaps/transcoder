@@ -7,7 +7,7 @@ RUN \
   apt-get install --no-install-recommends -y -q software-properties-common && \
   add-apt-repository ppa:stebbins/handbrake-releases && \
   apt-get update -q && \
-  apt-get install --no-install-recommends -y -q handbrake-cli
+  apt-get install --no-install-recommends -y -q handbrake-cli inotify-tools
 
 WORKDIR /
 

@@ -23,6 +23,6 @@ while true; do
             rm -f "/temp/${output}" && mv "/output/${name}" /deferred
         fi
     else
-        sleep 60
+        inotifywait -e moved_to /watch
     fi
 done
