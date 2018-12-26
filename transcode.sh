@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# TODO: clean exit on system signals
+# TODO: log failures and deferred to system journal
+# TODO: move unknown files in /watch to deferred
+
 set -x
 
 while true; do

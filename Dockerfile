@@ -1,3 +1,6 @@
+# TODO: switch to alpine
+# TODO: healthcheck
+
 FROM ubuntu:latest
 LABEL maintainer="Igor Vinokurov <zynaps@zynaps.ru>"
 
