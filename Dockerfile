@@ -10,14 +10,12 @@ RUN \
   apt-get install --no-install-recommends -y -q software-properties-common && \
   add-apt-repository ppa:stebbins/handbrake-releases && \
   apt-get update -q && \
-  apt-get install --no-install-recommends -y -q gosu handbrake-cli inotify-tools
+  apt-get install --no-install-recommends -y -q handbrake-cli inotify-tools
 
 WORKDIR /
 
-COPY entrypoint.sh transcode.sh ./
+COPY . ./
 
 VOLUME ["/watch", "/temp", "/deferred", "/output"]
 
-ENTRYPOINT ["/entrypoint.sh"]
-
-CMD ["/transcode.sh"]
+CMD ["transcode.sh"]
