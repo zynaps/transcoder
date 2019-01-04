@@ -1,16 +1,13 @@
-# TODO: switch to alpine
+# TODO: switch to alpine:latest
 # TODO: healthcheck
 
-FROM ubuntu:latest
+FROM alpine:edge
 LABEL maintainer="Igor Vinokurov <zynaps@zynaps.ru>"
 
 RUN \
-  set -x && \
-  apt-get update -q && apt-get upgrade -y -q && \
-  apt-get install --no-install-recommends -y -q software-properties-common && \
-  add-apt-repository ppa:stebbins/handbrake-releases && \
-  apt-get update -q && \
-  apt-get install --no-install-recommends -y -q handbrake-cli inotify-tools
+  set -xe && \
+  apk add --no-cache bash inotify-tools && \
+  apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing handbrake
 
 WORKDIR /
 
@@ -18,4 +15,4 @@ COPY . ./
 
 VOLUME ["/watch", "/temp", "/deferred", "/output"]
 
-CMD ["transcode.sh"]
+CMD ["bash", "transcode.sh"]
