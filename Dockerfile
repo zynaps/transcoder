@@ -1,7 +1,6 @@
-# TODO: switch to alpine:latest
 # TODO: healthcheck
 
-FROM alpine:edge
+FROM alpine:latest
 LABEL maintainer="Igor Vinokurov <zynaps@zynaps.ru>"
 
 RUN \
