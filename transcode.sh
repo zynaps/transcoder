@@ -32,5 +32,5 @@ while true; do
         fi
     done
 
-    inotifywait -e moved_to ./
+    sleep 60
 done
